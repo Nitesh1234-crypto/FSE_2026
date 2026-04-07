@@ -1,28 +1,66 @@
-//interface is user to implement class
+// we use interface to implements class
 
-interface Vehicle{
-    brandName:string,
-    getBrandName:()=> string
+interface Vehichle{
+     model:string,
+    color:string,
+    mileage:number,
+    topSpeed:number,
+    brand:string,
+    wheel:number,
+    getTopSpeed:()=>number,
+    // openSeatBealt:()=>void,
+    // openAirBags:()=>void
 }
-class Bike implements Vehicle{
-    brandName: string;
-    constructor(brandName:string){
-        this.brandName=brandName;
-    }
-    getBrandName():string{
-        return this.brandName;
-    }
 
+class Car implements Vehichle{
+    static model:string;
+    color:string;
+    mileage:number;
+    topSpeed:number;
+    brand:string;
+    wheel:number;
+    constructor(model:string,color:string,mileage:number,topSpeed:number,brand:string,wheel:number){
+        this.brand=brand;
+        this.color=color;
+        this.mileage=mileage;
+        this.topSpeed=topSpeed;
+        this.wheel=wheel
+        this.model=model
+    }
+    getTopSpeed():number{
+        return this.topSpeed
+    }
+    openAirBags(){
+        console.log("air bag opened")
+    }
+    openSeatBealt(){
+        console.log("seatbelt opened")
+    }
 }
-class Car implements Vehicle{
-    brandName: string;
-    constructor(brandName:string){
-        this.brandName=brandName;
+
+class bike implements Vehichle{
+     model:string;
+    color:string;
+    mileage:number;
+    topSpeed:number;
+    brand:string;
+    wheel:number;
+    constructor(model:string,color:string,mileage:number,topSpeed:number,brand:string,wheel:number){
+        this.brand=brand;
+        this.color=color;
+        this.mileage=mileage;
+        this.topSpeed=topSpeed;
+        this.wheel=wheel
+        this.model=model
     }
-    getBrandName():string{
-        return this.brandName;
+    getTopSpeed():number{
+        return this.topSpeed
     }
-    openAirBags():void{
-        console.log("air bags opend")
-    }
+    // openAirBags(){
+    //     // console.log("air bag opened")
+    // }
+    // openSeatBealt(){
+    //     console.log("seatbelt opened")
+    // }
 }
+let bikeObj :bike = new bike()

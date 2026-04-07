@@ -1,49 +1,57 @@
-//type anyvar = (number | string | boolean)[];
-//number[] | string[] | boolean[]
+// arg ---> string[] or number[]
 
-type numStrBool = number | string  | boolean
-function firstValue(arg:numStrBool[]):numStrBool | undefined{
+//string[] | number[] ----> (string | number)[]
+type strOrNum = string | number | boolean
+function firstValue(arg:strOrNum[]){
+   return arg[0]
+}
+let val = firstValue(["a","b","c"]);
+let val2 = firstValue([1,2,3]);
+let val3 = firstValue([1,"b",3]);
+
+//val ---> a;
+// val.toUpperCase();
+
+//generic
+function firstValue2<T>(arg:T[]){
     return arg[0];
 }
 
-let res1= firstValue([]);
-let res2 = firstValue(["a","cd","b"]);
-let res3= firstValue([true,false,false]);
-// let res4 = firstValue([1,"b",true]);
+let resultVal = firstValue2<string>(["a","b","c"]);
+let resultVal2 = firstValue2<number>([1,2,3,4]);
+let resultVal3 = firstValue2<string>([])
+resultVal?.toUpperCase();
+resultVal2?.toString();
 
-//res2=="a";
-// res1?.toString();
-// res2.toUpperCase();
-// res2?.toString();
+//HashMap<> map = new HashMap<>();
+// map1
+// 1:[],
+// 2:[],
+// 3:[]
 
-//union and intersaction , information about type lost--> union does not preserved type
+// map2
+// "a":2,
+// "b":3
 
-function firstValueGeneric<T>(arg:T[]){
-    return arg[0];
-}
-let out1= firstValueGeneric<string>(["a","bd","c"]);
+//? 
 
-out1?.toUpperCase();
-
-// ? is used to make property optional;
+//requirement --> if user dont want phone dont store it
 interface User{
-    readonly adharNumber:number,
-    name:string,
+   readonly name:string,
     email:string,
-    password:number,
-    phone?:number
+    phone?:number //optional
 }
-let user:User={
-    adharNumber:456789086,
-    name:"asdfg",
-    email:"asdfghj",
-    phone:23456,
-    password:234567
+let user:User ={
+    name:"fghjkl",
+    email:"ghjakls",
+    phone:456789
 }
+// user.name="fghkjljfd"
 let user2:User={
-    adharNumber:45678986,
-    name:"asdfg",
-    email:"asdfghj",
-    password:234567
+    name:"fhkj",
+    email:"dfhkjlkljh",
+    // phone:undefined
 }
-// user2.adharNumber =3456789876545;
+console.log(user2.phone)
+
+//read only
