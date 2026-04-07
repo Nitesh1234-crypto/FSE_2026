@@ -1,7 +1,7 @@
 // we use interface to implements class
 
 interface Vehichle{
-    model:string,
+     model:string,
     color:string,
     mileage:number,
     topSpeed:number,
@@ -13,7 +13,7 @@ interface Vehichle{
 }
 
 class Car implements Vehichle{
-    model:string;
+    static model:string;
     color:string;
     mileage:number;
     topSpeed:number;

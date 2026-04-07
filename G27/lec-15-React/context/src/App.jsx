@@ -1,5 +1,5 @@
 import React, { createContext, use, useContext, useState } from 'react'
-let priceContext = createContext(0);
+let priceContext = createContext(0); //create a context
 function App() {
   return (
     <div>
@@ -62,6 +62,7 @@ function Child1(props){
 <priceContext.Provider value={price}>
     <Child2 ></Child2>
 </priceContext.Provider>
+<Child4></Child4>
 <button onClick={()=>setPrice(500)}>price</button>
 {/* //more component */}
     </div>
@@ -108,3 +109,7 @@ function Child5(props){
 }
 
 export default App
+console.log(0=="    ")
+console.log(0=="") 
+console.log(""=="   ")
+

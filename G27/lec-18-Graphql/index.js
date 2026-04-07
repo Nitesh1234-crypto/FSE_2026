@@ -1,100 +1,172 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-let users =[
+let users = [
     {
         id:"1",
         name:"Nitesh",
         email:"nitesh@gmail.com",
-        phone:99999
+        password:"1234",
+        phone: 889888,
+       
     },
-     {
-        id:"2",
-        name:"Ritik",
+    {
+          id:"2",
+         name:"ritik",
         email:"ritik@gmail.com",
-        phone:99999
+        password:"1234",
+        phone: 889888
     },
-     {
-        id:"3",
-        name:"pratiyush",
+    {
+          id:"3",
+         name:"pratiyush",
         email:"pratiyush@gmail.com",
-        phone:99999
+        password:"1234",
+        phone: 889888
     }
 ]
-const typeDefs=`
-    #User  ==> comment
+let posts=[
+    {
+        postId:"1",
+        likes:56,
+        content:"random post",
+        userId:"1"
+    },
+     {
+        postId:"12",
+        likes:56,
+        content:"random post2",
+        userId:"2"
+    },
+     {
+        postId:"2",
+        likes:56,
+        content:"random post3",
+        userId:"3"
+    },
 
+]
+const typeDefs = `
     type User{
-        id:ID!,  #ID serialized into string
+        id:ID!  #ID is a special type which serialize to string,
+        #! is not null
         name:String,
         email:String,
-        phone : Int
+        password:String,
+        phone : Int,
+        post:[Post]
     }
+        type Post{
+        postId:ID!,
+        likes:Int,
+        content:String,
+        userId:ID!
+        user:User
+        }
     
     type Query{
-        getUsers:[User],
-        getOneUser(id:ID!):User
+        getUsers: [User],
+        getUser(id:ID!) :User,
+           getAllPosts:[Post],
+            getPost(id:ID!):Post,
+    }
+    type Mutation{
+        addUser(name:String,email:String,password:String,phone:Int):User,
+        deleteUserById(id:ID!):User,
+           addPost(postId:ID!, likes:Int, content:String):Post,
+            deletePost(postId:ID!):Post,
+            updatePost(postId:ID!, likes:Int, content:String):Post
     }
 
-    #Mutation
-    type Mutation{
-        addUser(id:ID!,name:String,email:String,phone:Int):User,
-        deleteUserById(id:ID!):[User],
-        updateUser(id:ID!,name:String,email:String,phone:Int):User
-    }
-   
 `
 
-const resolvers={
+const resolvers ={
     Query:{
         getUsers:()=>{
-            //db call
-            return users
+            //db caLL
+            return users;
         },
-        //in resolver we have 4 arguments -->parent,args,context,info -->optional // args are object which contains all the input ==> getOneUser(name,email,id)
-        getOneUser:(_,args)=>{
-            return users.find((u)=>u.id==args.id)
+        //resolver function has 4 parameter (optional)
+        //param-- parent,args,context,info -->args =input argument {}
+        getUser:(_,args)=>{
+            let id = args.id;
+            let user=users.find((u)=>u.id==id)
+            return user;
+            // return users[0];
+        },
+            getAllPosts:()=>{
+            return posts; 
+        },
+
+        getPost:(_,args)=>{
+            let{postId}=args;
+            return posts.find((p)=>p.id===postId);
         }
     },
     Mutation:{
         addUser:(_,args)=>{
-            //args -->id,name,email,phone 
-            let {id,name,email,phone} = args;
-            //logic to add this new user to database;
-            let newUser = {
-                id:id,
+            //name,email,password,phone 
+            let {name,email,password,phone} = args;
+            let newUser ={
+                id:String(Math.floor(Math.random()*1000000)),
                 name:name,
-                email:email,
+                email:email,password:password,
                 phone:phone
             }
             users.push(newUser);
             return newUser;
+
+
         },
         deleteUserById:(_,args)=>{
             let {id} = args;
-            users=users.filter((u)=>u.id!=id);
-            return users;
+            let deleteUser = users.find((u)=>u.id==id);
+            users= users.filter((u)=>u.id!=id);
+            return deleteUser;
 
         },
-        updateUser:(_,args)=>{
-            let {id,name,email,phone} =args;
-            let updateUser = users.find((u)=>u.id==id);
-            updateUser.name=name;
-            updateUser.email=email;
-            updateUser.phone=phone;
-            return updateUser;
+          addPost:(_, args)=>{
+            let{postId, likes, content}=args;
+            posts.push({postId:postId, likes:likes, content:content});
+            return posts[posts.length-1];
+        },
+        deletePost:(_, args)=>{
+            let{postId}=args;
+            let index=posts.findIndex(p=>p.postId=postId);
+            const deletedPost=posts[index];
+            posts.splice(index,1);
+            return deletedPost;
+        },
+        updatePost:(_,args)=>{
+            let{postId, likes, content}=args;
+            const post=posts.find((p)=>p.postId=postId);
+            if(likes) posts.likes=likes;
+            if(content) posts.content=content;
+            return post;
         }
-
-        
     }
 
-    //Mutation:{}
+
+
+    /**
+     * {
+     * query:{
+     *  key:()=>{},
+     * key2:()=>{}
+     * },
+     * mutation:{
+     *  key:()=>{},
+     * key2:()=>{}
+     * }
+     * }
+     */
 }
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
-const { url } = await startStandaloneServer(server, {
-  listen: { port: 4002 },
+await startStandaloneServer(server, {
+  listen: { port: 4003 },
 });
-console.log(`  Server ready at: ${url}`);
+
+console.log("server started")

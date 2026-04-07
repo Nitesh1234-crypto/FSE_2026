@@ -1,51 +1,74 @@
-import {ApolloServer} from "@apollo/server";
+import {ApolloServer} from "@apollo/server"
 import {startStandaloneServer} from "@apollo/server/standalone"
-let books=[
-{title:"Fse by Nitesh"},
-{title:"adi by ritik"},
-{title:"physics by Nitesh"}
+
+const books=[
+   {title:"physics by Ritik kumar"},
+   {title:"Maths by veer"},
+   {title:"chemistry by Nitesh"},
+   {
+    title:"biology by pratham"
+   }
 ]
-let authors=[
-{name:"Nitesh"},
-{name:"Ritik kumar"},
-{name:"Pratiyush"}
+const authors=[
+    {name:"veer pratap singh"},
+    {
+        name:"Nitesh"
+    },
+    {name:"seerat"},
+    {name :"pratham jindal"}
+
 ]
-const typeDefs = `
-type Book{
- title:String
+
+
+const typeDefs=`
+union SearchResult = Book | Author
+
+type Book {
+  title: String!
 }
- type Author{
- name:String
- }
- union searchResult :Book | Author
 
- type query{
-    search(input:String):[searchResult]
- }
+type Author {
+  name: String!
+}
+
+type Query {
+  search(contains: String): [SearchResult]
+}
 `
-const resolvers={
-    Query:{
-        search:(parent,args)=>{
-            let {input} = args;
-            //input == "Ritik kumar"
-            //map or filter map==[let books=[
-// {title:"Fse by Nitesh"},
-// {title:"adi by ritik"},
-// {title:"physics by Nitesh"}
-// ]]===> [undefinde, _,undefinde, undefine]
-            let searchBooks = books.filter((book)=>book.title.includes(input));
-            let searchAuthor = authors.filter((author)=>author.name.includes(input));
+const resolvers = {
+   
+    SearchResult: {
+    __resolveType(obj, contextValue, info){
+      // Only Author has a name field
+      if(obj.name){
+        return 'Author';
+      }
+      // Only Book has a title field
+      if(obj.title){
+        return 'Book';
+      }
+      return null; // GraphQLError is thrown
+    },
+  },
 
-            return [...searchAuthor,...searchBooks] //[[{},{}],[{},{}]]==>[{},{},{},{}]
+    Query:{
+        search:(parent,args,context)=>{
+            //write logic to return book or author which includes contains
+            let {contains} = args;
+            let searchBooks = books.filter((book)=>book.title.includes(contains));
+            let searchAuthor = authors.filter((author)=>author.name.includes(contains));
+            return [...searchBooks,...searchAuthor]  //[[{},{}],[{},{}]]==>[{},{},{},{}];
+
 
         }
     }
 }
+
 const server = new ApolloServer({
     typeDefs,
     resolvers
 })
- await startStandaloneServer(server,{
+await startStandaloneServer(server,{
     listen:{port:5555}
- })
- console.log("server started")
+})
+console.log("server started")
